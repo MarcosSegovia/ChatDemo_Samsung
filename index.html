@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="img/favicon.png">
+
+    <title>Samsung Multi-Screen Chat</title>
+
+    <!-- Vendor CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="vendor/showLoading/css/showLoading.css" rel="stylesheet" media="screen" />
+
+    <!-- Custom styles for this template -->
+    <link href="css/styles.css" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <div id="header" class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button id="btnDevices" type="button" class="btn btn-primary navbar-btn pull-right">
+              <span class="glyphicon glyphicon-new-window white"></span>
+          </button>
+          <a class="navbar-brand" href="#">Multi-Screen Chat</a>
+        </div>
+      </div>
+    </div>
+
+    <div id="toggleScreen">
+        <span class="chat-screen btn btn-primary btn-lg glyphicon glyphicon-comment active"></span>
+        <span class="video-screen btn btn-primary btn-lg glyphicon glyphicon-facetime-video"></span>
+        <div style="clear:both;"></div>
+    </div>
+
+    <div id="videoPlayer">
+        <p class="timer"></p>
+        <div class="screen-placeholder">
+        <span class="glyphicon glyphicon-facetime-video"></span>
+        </div>
+        <div id="videoScrubberContainer">
+            <input id="seekbar" type="range" name="seekbar" value="0" min="0" max="" step="1" />
+        </div>
+        <div class="container">
+            <ul id="playerControls">
+                <li><a id="play" class="glyphicon glyphicon-play" href="#"></a></li>
+                <li><a id="pause" class="glyphicon glyphicon-pause" href="#"></a></li>
+                <li><a id="stop" class="glyphicon glyphicon-stop" href="#"></a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <ul id="listMessages" class="list-group alternate">
+        <li class="list-group-item">
+            <h4 class="list-group-item-heading"><span class="glyphicon glyphicon-comment"></span> Assistant</h4>
+            <p class="list-group-item-text">Use the connect button in the top right of the header to find devices and connect to them</p>
+        </li>
+    </ul>
+
+    <div id="footer" class="navbar navbar-inverse navbar-fixed-bottom">
+        <div class="container">
+            <div class="input-group">
+                <span class="input-group-addon">
+                <label><input id="cbEncrypted" type="checkbox" name="cbEncrypted" value="encrypted">Encrypted</label>
+              </span>
+                <input id="txtMessage" type="text" class="form-control input-lg">
+                <div class="input-group-btn dropup">
+                    <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown">Send</button>
+                    <ul id="listSendTargets" class="dropdown-menu pull-right">
+                        <li><a href="#">Host</a></li>
+                        <li><a href="#">All</a></li>
+                        <li><a href="#">Broadcast</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="modalLoading" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div id="loading_pane" class="modal-content">
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDevices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Find Devices</h4>
+                </div>
+                <div class="modal-body">
+
+                    <h5>Enter PinCode</h5>
+                    <div class="input-group">
+                        <input id="txtPinCode" type="tel" class="form-control" maxlength="8">
+                          <span class="input-group-btn">
+                            <button id="btnFindByPin" class="btn btn-primary" type="button">Connect</button>
+                          </span>
+                    </div>
+                    <br />
+                    <h5>Search Local Network</h5>
+                    <button id="btnFindLocal" type="button" class="btn btn-primary btn-block">Search</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalFoundDevices" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Devices Found</h4>
+                </div>
+                <div class="modal-body">
+
+                    <ul id="listFoundDevices" class="list-group">
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalDisconnect" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">Close or Disconnect</h4>
+                </div>
+                <div class="modal-body">
+
+                    <h5>Disconnect From Application</h5>
+                    <button id="btnDisconnect" type="button" class="btn btn-primary btn-block">Disconnect</button>
+                    <br />
+                    <h5>Terminate Application</h5>
+                    <button id="btnTerminateApp" type="button" class="btn btn-primary btn-block">Close Application</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="vendor/jquery.min.js"></script>
+    <script src="vendor/jquery.maskedinput.min.js"></script>
+    <script src="vendor/showLoading/js/jquery.showLoading.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/multiscreen-mobile-1.1.18.min.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
